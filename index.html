@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Writer</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>  
+     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>  
      <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+     
  
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
@@ -28,9 +29,9 @@
     </div>
     <div class="col-6">
         <div class="d-flex align-items-center justify-content-end gap-3">
-            <button type="button" class=" btn btn-export mr-3"> <i class='bx bx-export me-2'></i>Export<i class='bx bx-chevron-down ms-2'></i></button>
+            <button type="button" class=" btn btn-export mr-3" id="exportbtn"> <i class='bx bx-export me-2'></i>Export<i class='bx bx-chevron-down ms-2'></i></button>
             <button type="button" class="btn btn-primary mr-3" data-toggle="modal" data-target="#myModal" ><i class='bx bx-plus me-2'></i>NewTask  </button>
-            <button type ="button" class="btn btn-remove mr-3" > <i class='bx bx-trash me-2'></i>Remove Tasks</button>
+            <button type ="button" class="btn btn-remove mr-3"  id="removeTask"> <i class='bx bx-trash me-2'></i>Remove Tasks</button>
         </div>
     </div> 
 </div>
@@ -196,7 +197,7 @@
     <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
-                <th scope="col">Id</th>
+                <th scope="col"  >Id</th>
                 <th scope="col"style="width: 290px;">TASK</th>
                 <th scope="col"style="width: 70px;">STORY</th>
                 <th scope="col"style="width: 90px;">ASSIGNEE</th>
@@ -213,4 +214,5 @@
 
   </div>
 </body>
+<script></script>
 </html>

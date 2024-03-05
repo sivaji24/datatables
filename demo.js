@@ -1,8 +1,15 @@
+
+
 $(document).ready(function () {
-  var table = $("#example").DataTable({
+  const table = $("#example").DataTable({
     ajax: "objects.json",
     columns: [
-      { data: "id" },
+      {
+        data: "id",
+        render: function (data,rowData) {
+          return '<input type="checkbox" class="task-checkbox" data-task-id="' + data + '">';
+        }
+      },
       {
         data: "task",
         createdCell: function (td, cellData, rowData, row, col) {
@@ -19,7 +26,8 @@ $(document).ready(function () {
         return '<p class="' + storyClass + '">' + data + '</p>';
     }
   },
-      { data: "assignee" },
+      { data: "assignee"
+     },
       { data: 'priority',
       "render": function(data, type, row) {
           var priorityClass = getPriorityClass(data);
@@ -36,7 +44,55 @@ $(document).ready(function () {
     } },
     ],
   });
+
+  $(document).on("click", "#removeTask", function () {
+    console.log("Remove Task button clicked");
+
+    const data = [];
+
+    // Collect selected task IDs
+    $(".task-checkbox:checked").each(function () {
+        data.push($(this).data("task-id"));
+    });
+
+    if (data.length > 0) {
+        // Confirm deletion with the user (optional)
+        if (window.confirm('Delete The Record?')) {
+
+            // Read the JSON file to get the data
+            const json = [];
+           
+            $.getJSON("objects.json", function (jsonData) {
+                if (jsonData.data) {
+                  json.push(jsonData.data);
+                  jsonData.data.forEach(item => {
+                    console.log("ID..............:", item.id);
+                  });
+                    // Remove selected tasks from data
+                    
+                        console.dir(typeof data)
+                    const newdata = jsonData.data.filter(cd => !data.includes(Number(cd.id)));
+                    console.dir(newdata);
+                    jsonData.data=newdata;
+                    // Save the updated data to the JSON file
+                    saveDataToJsonFile(jsonData);
+
+                    // Reload the DataTable to reflect the changes
+                    table.ajax.reload();
+                }
+            }).fail(function () {
+                alert("Error reading file");
+            });
+        } else {
+            // They clicked No
+        }
+    }
 });
+  
+
+});
+
+
 
 //     Function to map status values to class names
 function getStoryClass(story) {
@@ -49,10 +105,6 @@ function getStoryClass(story) {
           return 'default-status';
   }
 }
-
-
-
-
 function getStatusClass(status) {
   switch (status) {
       case 'progress':
@@ -188,14 +240,22 @@ function submitTask() {
     $("#error-end_date").css("display", "none");
   }
   if (startDate > endDate) {
-    document.getElementById("error-end_date").textContent = "End Date is graterthan  Start Date.";
-    document.getElementById("error-end_date").style.display = "block";
-    return;
-  } else {
-    document.getElementById("error-end_date").textContent = "";
-    document.getElementById("error-end_date").style.display = "none";
-  }
-
+  document.getElementById("error-end_date").textContent = "End Date is graterthan  Start Date.";
+  document.getElementById("error-end_date").style.display = "block";
+  return;
+} else {
+  document.getElementById("error-end_date").textContent = "";
+  document.getElementById("error-end_date").style.display = "none";
+}
+//-----------------------spendtime validation------------------
+if (!spendTime || isNaN(spendTime) || parseFloat(spendTime) <= 0) {
+  $("#error-spend_time").text("Spend Time should be a positive number greater than 0.");
+  $("#error-spend_time").css("display", "block");
+  return;
+} else {
+  $("#error-spend_time").text("");
+  $("#error-spend_time").css("display", "none");
+}
   const newTask = {
     task,
     story,
@@ -250,6 +310,7 @@ function submitTask() {
 
 function updateTaskData(taskData) {
   // Update the task data with the edited values
+  taskData.id=document.getElementById("id").value;
   taskData.task = document.getElementById("task").value;
   taskData.story = document.getElementById("story").value;
   taskData.assignee = document.getElementById("assignee").value;
@@ -280,4 +341,40 @@ function clearForm() {
   document.getElementById("status").value = "";
 }
 
+
+
+////------------------------------exportbutton ------------------------------------------/////
+function exportData() {
+  // Read the JSON file to get the data
+  $.getJSON("objects.json", function (jsonData) {
+    if (jsonData.data) {
+      // Convert the data to JSON string
+      const jsonString = JSON.stringify(jsonData.data, null, 2);
+
+      // Create a Blob from the JSON string
+      const blob = new Blob([jsonString], { type: "text/plain;charset=utf-8" });
+
+      // Create a download link
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Export_data.txt";
+
+      // Append the link to the body and trigger the click event
+      document.body.appendChild(a);
+      a.click();
+
+      // Remove the link from the body
+      document.body.removeChild(a);
+    }
+  }).fail(function () {
+    alert("Error reading file");
+  });
+}
+
+// Attach the exportData function to the click event of the export button
+$(document).on("click", "#exportbtn", function () {
+  exportData();
+});
+
+// ... your existing code ...
 

@@ -3,8 +3,9 @@ body {
     margin: 0;
     padding: 30px 4px;
 }
-
-
+.clicked-row{
+    background-color: red;
+}
 b{
     color: red;
 }
@@ -208,6 +209,7 @@ color: blue;
     margin: 4px 0 0 54px;
     display:none; 
  }
+
  .error-spendtime{
     color: red;
     text-align: center;
